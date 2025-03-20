@@ -51,7 +51,7 @@ void RayTracer::init(int scene_id) {
 
 Ray RayTracer::ray_thru_pixel(int i, int j) {
     /**
-     * This function generated a ray passing through camera origin
+     * This function generates a ray passing through the camera origin
      * and pixel (i, j)
      */
 
@@ -59,22 +59,15 @@ Ray RayTracer::ray_thru_pixel(int i, int j) {
     ray.pixel_x_coordinate = i;
     ray.pixel_y_coordinate = j;
 
-    // p0: set the ray origin to the camera's eye position
+    // p0: set the ray origin to the camera's eye position.
     ray.p0 = glm::vec3(camera.eye);
 
     /**
-     * Task 1.2:
-     * Randomly sample x and y inside pixel(i, j)
-     * For now we use the center of the pixel.
+     * Task 3:
+     * Randomly sample x and y offsets inside pixel (i, j) using glm::linearRand()
      */
-    float x = 0.5f;
-    float y = 0.5f;
-
-    /**
-     * Task 1.1:
-     * Calculate and assign direction to ray which is passing
-     * through current pixel (i, j)
-     */
+    float x = glm::linearRand(0.0f, 1.0f);
+    float y = glm::linearRand(0.0f, 1.0f);
 
     // Compute aspect ratio.
     float aspect_ratio = static_cast<float>(camera.width) / static_cast<float>(camera.height);
@@ -83,23 +76,24 @@ Ray RayTracer::ray_thru_pixel(int i, int j) {
     // Compute the scale based on the field of view.
     float tan_fov = tan(fov_radians / 2.0f);
 
-    // Compute offsets (alpha and beta) for the pixel center.
+    // Compute offsets (alpha and beta) for the pixel sample.
     // The x coordinate is mapped from [0, width] to [-tan_fov*aspect_ratio, tan_fov*aspect_ratio]
     // The y coordinate is mapped from [0, height] to [tan_fov, -tan_fov]
     float alpha = ((i + x) - camera.width / 2.0f) / (camera.width / 2.0f) * tan_fov * aspect_ratio;
     float beta  = ((camera.height / 2.0f) - (j + y)) / (camera.height / 2.0f) * tan_fov;
 
-    vec3 u(camera.cameraMatrix[0]);
-    vec3 v(camera.cameraMatrix[1]);
-    vec3 w(camera.cameraMatrix[2]);
+    // Retrieve the camera basis vectors.
+    glm::vec3 u(camera.cameraMatrix[0]);
+    glm::vec3 v(camera.cameraMatrix[1]);
+    glm::vec3 w(camera.cameraMatrix[2]);
 
-    // Compute the ray direction:
-    // The ray goes from the camera's eye, through the pixel on the image plane.
-    // We subtract w because the camera looks in the direction opposite to w.
-    ray.dir = normalize(alpha * u + beta * v - w);
+    // Compute the ray direction.
+    // The camera looks in the direction opposite to w.
+    ray.dir = glm::normalize(alpha * u + beta * v - w);
 
     return ray;
 }
+
 
 void RayTracer::set_shading_mode(ShadingMode shading_mode) {
     // Update shading mode for both ray tracer and scene
