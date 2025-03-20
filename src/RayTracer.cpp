@@ -59,29 +59,44 @@ Ray RayTracer::ray_thru_pixel(int i, int j) {
     ray.pixel_x_coordinate = i;
     ray.pixel_y_coordinate = j;
 
-    // p0
+    // p0: set the ray origin to the camera's eye position
     ray.p0 = glm::vec3(camera.eye);
 
     /**
-     * TODO: Task 1.2
+     * Task 1.2:
      * Randomly sample x and y inside pixel(i, j)
+     * For now we use the center of the pixel.
      */
     float x = 0.5f;
     float y = 0.5f;
 
     /**
-     * TODO: Task 1.1
-     * calculate and assign direction to ray which is passoing
+     * Task 1.1:
+     * Calculate and assign direction to ray which is passing
      * through current pixel (i, j)
      */
-    float alpha = 0.0f;  // TODO: Implement this
-    float beta = 0.0f;   // TODO: Implement this
+
+    // Compute aspect ratio.
+    float aspect_ratio = static_cast<float>(camera.width) / static_cast<float>(camera.height);
+    // Convert field-of-view from degrees to radians.
+    float fov_radians = glm::radians(camera.fov);
+    // Compute the scale based on the field of view.
+    float tan_fov = tan(fov_radians / 2.0f);
+
+    // Compute offsets (alpha and beta) for the pixel center.
+    // The x coordinate is mapped from [0, width] to [-tan_fov*aspect_ratio, tan_fov*aspect_ratio]
+    // The y coordinate is mapped from [0, height] to [tan_fov, -tan_fov]
+    float alpha = ((i + x) - camera.width / 2.0f) / (camera.width / 2.0f) * tan_fov * aspect_ratio;
+    float beta  = ((camera.height / 2.0f) - (j + y)) / (camera.height / 2.0f) * tan_fov;
 
     vec3 u(camera.cameraMatrix[0]);
     vec3 v(camera.cameraMatrix[1]);
     vec3 w(camera.cameraMatrix[2]);
 
-    ray.dir = vec3(-1.0f);  // TODO: Implement this
+    // Compute the ray direction:
+    // The ray goes from the camera's eye, through the pixel on the image plane.
+    // We subtract w because the camera looks in the direction opposite to w.
+    ray.dir = normalize(alpha * u + beta * v - w);
 
     return ray;
 }
