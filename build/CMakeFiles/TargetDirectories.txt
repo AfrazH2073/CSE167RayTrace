@@ -1,3 +1,3 @@
-/Users/ahameed/Documents/GitHub/CSE167RayTrace/build/CMakeFiles/RayTracer.dir
-/Users/ahameed/Documents/GitHub/CSE167RayTrace/build/CMakeFiles/edit_cache.dir
-/Users/ahameed/Documents/GitHub/CSE167RayTrace/build/CMakeFiles/rebuild_cache.dir
+/Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/build/CMakeFiles/RayTracer.dir
+/Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/build/CMakeFiles/edit_cache.dir
+/Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/build/CMakeFiles/rebuild_cache.dir

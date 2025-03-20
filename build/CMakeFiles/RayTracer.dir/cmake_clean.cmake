@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/Users/ahameed/Documents/GitHub/CSE167RayTrace/bin/RayTracer"
-  "/Users/ahameed/Documents/GitHub/CSE167RayTrace/bin/RayTracer.pdb"
+  "/Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/bin/RayTracer"
+  "/Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/bin/RayTracer.pdb"
   "CMakeFiles/RayTracer.dir/main.cpp.o"
   "CMakeFiles/RayTracer.dir/main.cpp.o.d"
   "CMakeFiles/RayTracer.dir/src/Camera.cpp.o"

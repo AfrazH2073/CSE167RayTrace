@@ -79,7 +79,7 @@ Ray RayTracer::ray_thru_pixel(int i, int j) {
     // Compute aspect ratio.
     float aspect_ratio = static_cast<float>(camera.width) / static_cast<float>(camera.height);
     // Convert field-of-view from degrees to radians.
-    float fov_radians = glm::radians(camera.fov);
+    float fov_radians = glm::radians(camera.fovy);
     // Compute the scale based on the field of view.
     float tan_fov = tan(fov_radians / 2.0f);
 
