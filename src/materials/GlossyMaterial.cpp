@@ -5,54 +5,46 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
+#include <algorithm>
 
 using namespace glm;
 
 Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &intersection) {
-    /**
-     * Calculate the next ray after intersection with the model.
-     * This will be used for recursive ray tracing.
-     */
-
-    // Decide if diffuse or specular reflection
+    // Decide if the bounce is diffuse or specular based on a random value versus shininess.
     float random = linearRand(0.0f, 1.0f);
     vec3 normal = intersection.normal;
     vec3 point = intersection.point;
 
-    // Diffuse reflection
+    // --- Diffuse Reflection (Task 6.1) ---
     if (random > shininess) {
-        // Step 1: Sample ray direction
-        /**
-         * TODO: Task 6.1
-         * Implement cosine-weighted hemisphere sampling
-         */
-        // cosin sample next ray
+        // Step 1: Cosine-weighted hemisphere sampling.
+        // Generate two random numbers in [0,1]
         float s = linearRand(0.0f, 1.0f);
         float t = linearRand(0.0f, 1.0f);
+        // Compute angle u from 0 to 2π
+        float u_angle = 2.0f * pi<float>() * s;
+        // For cosine-weighted sampling, set:
+        // x = sqrt(1 - t) * cos(u_angle), y = sqrt(t), z = sqrt(1 - t) * sin(u_angle)
+        // Here the 'y' component represents the component along the surface normal.
+        float r = sqrt(1.0f - t);
+        float y_comp = sqrt(t);
+        vec3 hemisphere_sample = vec3(r * cos(u_angle), y_comp, r * sin(u_angle));
 
-        // TODO: Update u, v based on Equation (8) in handout
-        float u = 0.0f;
-        float v = 0.0f;
-
-        vec3 hemisphere_sample = vec3(0.0f);  // TODO: Update value to cosine-weighted sampled direction
-
-        // The direction we sampled above is in local co-ordinate frame
-        // we need to align it with the surface normal
+        // The sample above is in the local coordinate frame (with y-up).
+        // Align it with the actual surface normal.
         vec3 new_dir = align_with_normal(hemisphere_sample, normal);
 
-        // Step 2: Calculate radiance
-        /**
-         * TODO: Task 6.1
-         * Note:
-         * - C_diffuse = `this->diffuse`
-         */
-        vec3 W_diffuse = vec3(0.0f);  // TODO: Calculate the radiance for current bounce
+        // Step 2: Compute the diffuse radiance for this bounce.
+        // Multiply the material's diffuse coefficient (C_diffuse) by the cosine of the angle between normal and new_dir.
+        float cos_theta = std::max(dot(normal, new_dir), 0.0f);
+        vec3 W_diffuse = diffuse * cos_theta;
 
-        // update radiance
+        // Update the ray's radiance.
         ray.W_wip = ray.W_wip * W_diffuse;
 
-        // update ray direction and position
-        ray.p0 = point + 0.001f * normal;  // offset point slightly to avoid self intersection
+        // Update the ray's origin and direction.
+        // Offset the origin a bit along the normal to avoid self-intersection.
+        ray.p0 = point + 0.001f * normal;
         ray.dir = new_dir;
         ray.is_diffuse_bounce = true;
         ray.n_bounces++;
@@ -60,26 +52,20 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
         return ray;
     }
 
-    // Specular Reflection
+    // --- Specular Reflection (Task 6.2) ---
+    // Step 1: Compute the perfect mirror reflection direction.
+    // Reflection direction: r = ray.dir - 2 * dot(ray.dir, normal) * normal.
+    vec3 reflection_dir = normalize(ray.dir - 2.0f * dot(ray.dir, normal) * normal);
 
-    // Step 1: Calculate reflection direction
-    /**
-     * TODO: Task 6.2
-     * Calculate the perfect mirror reflection direction
-     */
-    vec3 reflection_dir = vec3(0.0f);  // TODO: Update with reflection direction
+    // Step 2: Compute the specular radiance.
+    // Here, the specular coefficient (C_specular) is directly used.
+    vec3 W_specular = specular;
 
-    // Step 2: Calculate radiance
-    /**
-     * TODO: Task 6.2
-     * Note:
-     * - C_specular = `this->specular`
-     */
-    vec3 W_specular = vec3(0.0f);  // TODO: Calculate the radiance for current bounce
-
-    // update radiance
+    // Update the ray's radiance.
     ray.W_wip = ray.W_wip * W_specular;
-    ray.p0 = point + 0.001f * normal;  // offset point slightly to avoid self intersection
+
+    // Update the ray's origin and direction.
+    ray.p0 = point + 0.001f * normal;  // offset to avoid self-intersection
     ray.dir = reflection_dir;
     ray.is_diffuse_bounce = false;
     ray.n_bounces++;
