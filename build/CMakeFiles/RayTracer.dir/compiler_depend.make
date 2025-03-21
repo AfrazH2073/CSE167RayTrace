@@ -3710,6 +3710,7 @@ CMakeFiles/RayTracer.dir/src/RayTracer.cpp.o: /Users/akhilkalakota/Documents/Git
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeomTriangle.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeometryBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GlossyMaterial.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Image.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Intersection.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/MaterialBase.h \
@@ -5041,6 +5042,8 @@ CMakeFiles/RayTracer.dir/src/Scene.cpp.o: /Users/akhilkalakota/Documents/GitHub/
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stddef.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeometryBase.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GlossyMaterial.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Intersection.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/MaterialBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ModelBase.h \
@@ -5049,6 +5052,15 @@ CMakeFiles/RayTracer.dir/src/Scene.cpp.o: /Users/akhilkalakota/Documents/GitHub/
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ShadingMode.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Utility.h \
   /opt/homebrew/include/glm/glm.hpp \
+  /opt/homebrew/include/glm/detail/qualifier.hpp \
+  /opt/homebrew/include/glm/detail/type_vec1.hpp \
+  /opt/homebrew/include/glm/exponential.hpp \
+  /opt/homebrew/include/glm/ext/scalar_int_sized.hpp \
+  /opt/homebrew/include/glm/ext/scalar_uint_sized.hpp \
+  /opt/homebrew/include/glm/geometric.hpp \
+  /opt/homebrew/include/glm/trigonometric.hpp \
+  /opt/homebrew/include/glm/gtc/random.hpp \
+  /opt/homebrew/include/glm/gtc/random.inl \
   /opt/homebrew/include/glm/matrix.hpp \
   /opt/homebrew/include/glm/detail/type_mat2x2.hpp \
   /opt/homebrew/include/glm/detail/type_mat2x3.hpp \
@@ -8787,6 +8799,7 @@ CMakeFiles/RayTracer.dir/src/materials/GlossyMaterial.cpp.o: /Users/akhilkalakot
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/16/include/stdint.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeometryBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GlossyMaterial.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Intersection.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/MaterialBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ModelBase.h \
@@ -13719,6 +13732,8 @@ CMakeFiles/RayTracer.dir/src/models/Tetrahedron.cpp.o: /Users/akhilkalakota/Docu
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/cstring:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/cstdlib:
+
+/Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h:
 
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__functional/function.h:
 

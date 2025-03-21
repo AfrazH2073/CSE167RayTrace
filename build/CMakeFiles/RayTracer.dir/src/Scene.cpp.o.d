@@ -1278,10 +1278,19 @@ CMakeFiles/RayTracer.dir/src/Scene.cpp.o: \
   /opt/homebrew/include/glm/gtx/../gtx/dual_quaternion.inl \
   /opt/homebrew/include/glm/gtx/../gtx/../geometric.hpp \
   /opt/homebrew/include/glm/gtx/string_cast.inl \
-  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ModelBase.h \
-  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeometryBase.h \
-  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Intersection.h \
+  /opt/homebrew/include/glm/gtc/random.hpp \
+  /opt/homebrew/include/glm/gtc/../ext/scalar_int_sized.hpp \
+  /opt/homebrew/include/glm/gtc/../ext/scalar_uint_sized.hpp \
+  /opt/homebrew/include/glm/gtc/../detail/qualifier.hpp \
+  /opt/homebrew/include/glm/gtc/random.inl \
+  /opt/homebrew/include/glm/gtc/../geometric.hpp \
+  /opt/homebrew/include/glm/gtc/../exponential.hpp \
+  /opt/homebrew/include/glm/gtc/../trigonometric.hpp \
+  /opt/homebrew/include/glm/gtc/../detail/type_vec1.hpp \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GlossyMaterial.h \
   /opt/homebrew/include/glm/glm.hpp \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Intersection.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/MaterialBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Ray.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Utility.h \
@@ -1307,4 +1316,6 @@ CMakeFiles/RayTracer.dir/src/Scene.cpp.o: \
   /opt/homebrew/include/glm/gtx/../gtx/../detail/qualifier.hpp \
   /opt/homebrew/include/glm/gtx/quaternion.inl \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Scene.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ModelBase.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeometryBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ShadingMode.h

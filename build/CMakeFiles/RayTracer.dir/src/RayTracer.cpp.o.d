@@ -1437,5 +1437,6 @@ CMakeFiles/RayTracer.dir/src/RayTracer.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/c++/v1/__filesystem/u8path.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/src/./scenes/teapot_in_box.inl \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/Image.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ProgressBar.h

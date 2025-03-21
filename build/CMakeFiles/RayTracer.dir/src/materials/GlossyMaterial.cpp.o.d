@@ -1303,6 +1303,7 @@ CMakeFiles/RayTracer.dir/src/materials/GlossyMaterial.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk/usr/include/unistd.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/GeometryBase.h \
   /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/ShadingMode.h \
+  /Users/akhilkalakota/Documents/GitHub/CSE167RayTrace/include/HybridGlossyMaterial.h \
   /opt/homebrew/include/glm/gtc/random.hpp \
   /opt/homebrew/include/glm/gtc/../ext/scalar_int_sized.hpp \
   /opt/homebrew/include/glm/gtc/../ext/scalar_uint_sized.hpp \

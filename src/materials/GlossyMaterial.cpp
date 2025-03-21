@@ -1,6 +1,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "GlossyMaterial.h"
-
+#include "HybridGlossyMaterial.h"  // our new header file
 #include <glm/glm.hpp>
 #include <glm/gtc/random.hpp>
 #include <glm/gtx/string_cast.hpp>
@@ -8,6 +8,55 @@
 #include <algorithm>
 
 using namespace glm;
+
+Ray HybridGlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &intersection) {
+    // Surface info
+    vec3 normal = intersection.normal;
+    vec3 point = intersection.point;
+    
+    // Compute the perfect mirror reflection direction.
+    // Note: ray.dir points from the camera to the surface.
+    vec3 perfect_reflection = normalize(ray.dir - 2.0f * dot(ray.dir, normal) * normal);
+    
+    // --- Glossy Perturbation ---
+    // Instead of simply returning the mirror reflection,
+    // we sample a perturbation from a cosine-weighted hemisphere
+    // centered around the perfect reflection direction.
+    
+    // Generate two random numbers in [0,1]
+    float s = glm::linearRand(0.0f, 1.0f);
+    float t = glm::linearRand(0.0f, 1.0f);
+    // Compute an angle from 0 to 2π.
+    float u_angle = 2.0f * pi<float>() * s;
+    // Cosine-weighted hemisphere sampling in a local frame where "up" is (0,1,0)
+    float r_val = sqrt(1.0f - t);
+    float y_comp = sqrt(t);
+    vec3 local_sample = vec3(r_val * cos(u_angle), y_comp, r_val * sin(u_angle));
+    
+    // Align the local sample with the reflection direction.
+    // (Assuming align_with_normal() transforms a local direction with y-up to one with the given up-vector.)
+    vec3 glossy_reflection = align_with_normal(local_sample, perfect_reflection);
+    
+    // --- Blending the Reflection ---
+    // We use a parameter 'roughness' (member variable in HybridGlossyMaterial, in [0,1])
+    // to blend between pure specular and a more diffuse reflection.
+    // If roughness == 0, the reflection is perfect mirror (pure specular).
+    // If roughness == 1, the reflection is fully perturbed (more diffuse in reflection direction).
+    // Here, mix() linearly interpolates between 'specular' and 'diffuse' coefficients.
+    vec3 blended_weight = mix(specular, diffuse, roughness);
+    
+    // Update the ray's cumulative radiance.
+    ray.W_wip = ray.W_wip * blended_weight;
+    
+    // Update ray origin and direction.
+    // Offset origin along the surface normal to avoid self-intersection.
+    ray.p0 = point + 0.001f * normal;
+    ray.dir = glossy_reflection;
+    ray.n_bounces++;
+    
+    return ray;
+}
+
 
 Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &intersection) {
     // Decide if the bounce is diffuse or specular based on a random value versus shininess.

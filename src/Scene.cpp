@@ -2,10 +2,14 @@
 #include <stack>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/random.hpp>
+#include "HybridGlossyMaterial.h"
 
 #include "ModelBase.h"
 #include "Ray.h"
 #include "Scene.h"
+
+
 
 Scene::Scene(std::unique_ptr<Node> root_node) {
     /**
@@ -57,22 +61,15 @@ Scene::Scene(std::unique_ptr<Node> root_node) {
 
 Ray Scene::intersect(Ray &ray) const {
     using namespace glm;
-    /**
-     * For each model in the scene, we will check if the ray intersects
-     * the model. If it does, we will update the ray with the intersection
-     * details.
-     */
-
+    // Clear previous intersections
     ray.intersections.clear();
 
     for (unsigned int idx = 0; idx < models.size(); idx++) {
-        // ray is updated with just intersection details
+        // Update ray intersections for each model
         models[idx]->intersect(ray);
     }
 
     // Select the closest intersection
-    // This section assumes that ray intesections behind the camera are
-    // already filtered out by the `model->intersect()` function
     Intersection intersection;
     intersection.t = std::numeric_limits<float>::max();
     for (unsigned int idx = 0; idx < ray.intersections.size(); idx++) {
@@ -80,43 +77,57 @@ Ray Scene::intersect(Ray &ray) const {
             intersection = ray.intersections[idx];
     }
 
-    // update color based on intersection
+    // If we found an intersection...
     if (ray.intersections.size() > 0) {
-        // if normal shading is on
+        // If normal shading mode is enabled, just return the surface normal as color.
         if (this->shading_mode == ShadingMode::NORMAL) {
-            // just return normal as color
             ray.color = RGB_to_Linear(0.4f * intersection.normal + 0.6f);
             ray.isWip = false;
             return ray;
         }
 
+        // If the intersected model is a light source, return its emission.
         if (intersection.model->is_light_source()) {
             if (ray.is_diffuse_bounce)
-                // ignore to avoid double counting
-                ray.color = vec3(0.0f);
+                ray.color = vec3(0.0f); // avoid double counting
             else
                 ray.color = ray.W_wip * intersection.model->material->emission;
 
-            ray.isWip = false;  // no further processing
+            ray.isWip = false;
             return ray;
         }
 
-        // update color for nth last bounce
+        // Update the ray's color based on the direct lighting at this intersection.
         ray.color = intersection.model->material->color_of_last_bounce(ray, intersection, *this);
 
-        // This function will give out next ray and
-        // update wip color params as well
-        ray = intersection.model->material->sample_ray_and_update_radiance(ray, intersection);
+        // ----- Russian Roulette Termination -----
+        // Introduce a termination probability lambda (λ). Here, λ = 0.1 (10% termination probability)
+        const float rr_lambda = 0.1f;
+        float rr_rand = linearRand(0.0f, 1.0f);
+        if (rr_rand < rr_lambda) {
+            // Terminate the ray and re-weight the final contribution.
+            // For a path that terminates at this bounce, the reweight factor should be 1/λ.
+            ray.color = ray.color / rr_lambda;
+            ray.isWip = false;
+            return ray;
+        } else {
+            // Ray survives this bounce; re-weight its accumulated radiance.
+            ray.W_wip = ray.W_wip / (1.0f - rr_lambda);
+        }
+        // -----------------------------------------
 
+        // Generate the next ray bounce and update radiance.
+        ray = intersection.model->material->sample_ray_and_update_radiance(ray, intersection);
         return ray;
     }
 
-    // if no intersection, update color with sky color`
-    ray.W_wip = ray.W_wip * this->get_sky_color(ray);  // sky color
-    ray.isWip = false;                                 // no further processing
+    // If no intersection, use the sky color.
+    ray.W_wip = ray.W_wip * this->get_sky_color(ray);  // apply sky color
+    ray.isWip = false;  // mark ray as finished
     ray.color = ray.W_wip;
     return ray;
 }
+
 
 glm::vec3 Scene::get_sky_color(Ray &ray) const {
     /**

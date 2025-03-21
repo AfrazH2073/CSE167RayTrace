@@ -2,7 +2,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-
+#include "HybridGlossyMaterial.h"
 #include "GlossyMaterial.h"
 #include "Obj.h"
 #include "RayTracer.h"
@@ -10,6 +10,13 @@
 #include "Square.h"
 
 using namespace glm;
+
+std::shared_ptr<HybridGlossyMaterial> hybrid_material = std::make_shared<HybridGlossyMaterial>(
+    glm::vec3(0.1f, 0.1f, 0.1f),    // Diffuse coefficient
+    glm::vec3(0.8f, 0.8f, 0.8f), // Specular coefficient
+    0.05f,                         // Roughness (0 = perfect mirror, 1 = fully diffused)
+    0.5f                          // Shininess (controls specular probability)
+);
 
 Scene* teapot_in_box() {
     std::shared_ptr<GlossyMaterial> diffuse_material_white_wall = std::make_shared<GlossyMaterial>(vec3(0.99f), vec3(0.0f), 0.0);
@@ -53,13 +60,13 @@ Scene* teapot_in_box() {
     root_node->childnodes.push_back(std::move(square_light));
     root_node->childtransforms.push_back(translate(mat4(1.0f), vec3(0.0f, 1.95f, 0.0f)));
 
-    std::unique_ptr<Node> teapot = std::make_unique<Node>();
-    teapot->model = std::make_unique<Obj>("../src/models/teapot.obj", glossy_material);
-    root_node->childnodes.push_back(std::move(teapot));
-    root_node->childtransforms.push_back(
-        translate(vec3(0.0f, -2.0f, 0.0f)) *
-        scale(vec3(1.0f, 2.0f, 1.0f)) *
-        rotate(degree_to_rad(30.0f), vec3(0.0f, 1.0f, 0.0f)));
+std::unique_ptr<Node> teapot = std::make_unique<Node>();
+teapot->model = std::make_unique<Obj>("../src/models/teapot.obj", hybrid_material);
+root_node->childnodes.push_back(std::move(teapot));
+root_node->childtransforms.push_back(translate(glm::mat4(1.0f), glm::vec3(0.0f, -2.0f, 0.0f)) *
+                                       scale(glm::vec3(1.0f)) *
+                                       rotate(degree_to_rad(30.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+
 
     // Initialize the scene
     return new Scene(std::move(root_node));
