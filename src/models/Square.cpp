@@ -40,19 +40,15 @@ Square::Square(vec3 center, float side_len, vec3 normal, std::shared_ptr<Materia
 
 vec3 Square::get_surface_point() {
     using namespace glm;
-    /**
-     * TODO: Task 4.2
-     * Implement uniform random point sampling on the square
-     */
+    // Sample random offsets in the interval [-0.5, 0.5]
+    float u_offset = linearRand(-0.5f, 0.5f);
+    float v_offset = linearRand(-0.5f, 0.5f);
 
-    float u = linearRand(-0.5f, 0.5f);
-    float v = linearRand(-0.5f, 0.5f);
+    // Compute the sampled point on the square:
+    // p = center + u_offset * side_len * tangent + v_offset * side_len * bitangent
+    vec3 samplePoint = center + u_offset * side_len * tangent + v_offset * side_len * bitangent;
 
-    /**
-     * TODO: use tangent and bitangent to sample a uniformly random point on square
-     */
-    vec3 samplePoint = center;
-
-    // transform to world space
+    // Transform the sample point into world space and return it.
     return vec3(transformation_matrix * vec4(samplePoint, 1.0f));
 }
+
