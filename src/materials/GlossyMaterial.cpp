@@ -90,74 +90,71 @@ Ray GlossyMaterial::sample_ray_and_update_radiance(Ray &ray, Intersection &inter
 glm::vec3 GlossyMaterial::get_direct_lighting(Intersection &intersection, Scene const &scene) {
     using namespace glm;
 
-    /**
-     * Note:
-     * - Light sources from scene can be accessed by `scene.light_sources`
-     * - Models from scene can be accessed by `scene.models`
-     */
-
-    // Iterate over all light sources
+    // Accumulate contributions from all lights
     vec3 cummulative_direct_light = vec3(0.0f);
+
+    // Surface point and normal
+    const vec3 P = intersection.point;
+    const vec3 N = intersection.normal;
+
+    // Loop over each light source
     for (unsigned int idx = 0; idx < scene.light_sources.size(); idx++) {
-        // intersection could be with one of the light source to
-        // so skip self intersection
+        // Skip if this intersection is with the light source itself
         if (scene.light_sources[idx] == intersection.model)
             continue;
 
-        // get light source position
+        // 1) Get a point on the light source
         vec3 light_pos = scene.light_sources[idx]->get_surface_point();
 
-        // check if point is in shadow
-        /**
-         * TODO: Task 4.1
-         * Shoot a shadow ray towards light source
-         * Note:
-         * - Offset ray starting position by small amount to avoid self shadowing
-         * - Use `light_pos` and `intersection.point` to get direction for shadow ray
-         * - Surface normal at point of intersection is stored in `intersection.normal`
-         */
+        // 2) Construct the shadow ray
+        // Offset the origin slightly to avoid self-shadowing
         Ray shadow_ray;
-        shadow_ray.p0 = vec3(0.0f);   // TODO: Update ray start position here
-        shadow_ray.dir = vec3(0.0f);  // TODO: Update ray direction here
+        shadow_ray.p0 = P + 1e-4f * N;
+        shadow_ray.dir = normalize(light_pos - P);
 
-        // check if shadow ray intersects any model
-        for (unsigned int idx = 0; idx < scene.models.size(); idx++)
-            scene.models[idx]->intersect(shadow_ray);
-
-        // get closest intersection
-        Intersection closest_intersection;
-        closest_intersection.t = std::numeric_limits<float>::max();
-        for (unsigned int idx = 0; idx < shadow_ray.intersections.size(); idx++) {
-            if (shadow_ray.intersections[idx].t < closest_intersection.t)
-                closest_intersection = shadow_ray.intersections[idx];
+        // 3) Intersect the shadow ray with all models
+        for (auto &model : scene.models) {
+            model->intersect(shadow_ray);
         }
 
-        // check if light source is visible
+        // Find the closest intersection along this shadow ray
+        Intersection closest_intersection;
+        closest_intersection.t = std::numeric_limits<float>::max();
+
+        for (auto &isect : shadow_ray.intersections) {
+            if (isect.t < closest_intersection.t) {
+                closest_intersection = isect;
+            }
+        }
+
+        // 4) Check if the light is visible
         if (closest_intersection.model == scene.light_sources[idx]) {
-            // light source emission value
+            // Light is visible, so compute diffuse contribution using Lambert’s law
             vec3 light_emission = scene.light_sources[idx]->material->emission;
 
-            /**
-             * TODO: Task 4.1
-             * Calculate direct light contribution using lamberts cosine law.
-             * Refer Equation (3) in final project handout for more details
-             *
-             * NOTE:
-             * - Surface normal at point of intersection is stored in `intersection.normal`
-             * - This `if` condition block takes care of `visibility_of_light` part in the equation
-             *   So here you just need to calculate contribution of light like we did in HW3 for diffuse part
-             */
-            vec3 direct_light = vec3(0.0f);  // TODO: Update direct light constribution of light source
+            // Direction from surface point to light
+            vec3 L = shadow_ray.dir;
+            // Lambert’s cosine factor
+            float nDotL = std::max(0.0f, dot(N, L));
 
-            // attenuation factor for light source based on distance
-            float attenuation_factor = scene.light_sources[idx]->material->get_light_attenuation_factor(closest_intersection.t);
+            // Example diffuse term (assuming purely diffuse response):
+            // If your material has a diffuse color (e.g., this->diffuse_color),
+            // multiply that in as well: diffuse_color * light_emission * nDotL
+            vec3 direct_light = light_emission * nDotL;
 
+            // Light attenuation based on distance
+            float attenuation_factor =
+                scene.light_sources[idx]->material->get_light_attenuation_factor(closest_intersection.t);
+
+            // Accumulate contribution
             cummulative_direct_light += direct_light / attenuation_factor;
         }
     }
 
     return cummulative_direct_light;
 }
+
+
 
 vec3 GlossyMaterial::color_of_last_bounce(Ray &ray, Intersection &intersection, Scene const &scene) {
     using namespace glm;
