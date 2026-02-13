@@ -1,1 +1,1 @@
-# CSE167RayTrace
+# Ray Tracer
